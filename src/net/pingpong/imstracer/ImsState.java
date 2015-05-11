@@ -36,6 +36,7 @@ public class ImsState {
 		RecStatus recstatus;
 		Date timeframeBegin;
 		Date timeframeEnd;
+		int lineNumber;
 
 		protected String timeframeToString() {
 			if (timeframeBegin == null && timeframeEnd == null) return "";
@@ -44,7 +45,7 @@ public class ImsState {
 		}
 	}
 
-	public static class ImsGroup extends ImsObject {
+	public static final class ImsGroup extends ImsObject {
 		String grouptype;
 		String name; // group/description/short
 		String coursecode;
@@ -57,7 +58,7 @@ public class ImsState {
 		}
 	}
 
-	public static class ImsPerson extends ImsObject {
+	public static final class ImsPerson extends ImsObject {
 		String personnummer;
 		String familyName;
 		String givenName;
@@ -72,12 +73,12 @@ public class ImsState {
 		}
 	}
 
-	public static class ImsMembership extends ImsObject {
+	public static final class ImsMembership extends ImsObject {
 		final List<ImsMember> members = new ArrayList<>();
 	}
 
 	/** Assumes only one role per member. */
-	public static class ImsMember extends ImsObject {
+	public static final class ImsMember extends ImsObject {
 		ImsMembership parentMembership;
 		String roletype;
 		String idtype;
@@ -85,6 +86,10 @@ public class ImsState {
 
 		public ImsMember(ImsMembership parent) {
 			this.parentMembership = parent;
+		}
+
+		public boolean isPerson() {
+			return "Person".equals(idtype);
 		}
 
 		@Override
@@ -95,7 +100,7 @@ public class ImsState {
 					+ ", föräldragrupp="
 					+ parentMembership.sourcedidId
 					+ ", barn"
-					+ ("Person".equals(idtype) ? "person" : "grupp")
+					+ (isPerson() ? "person" : "grupp")
 					+ "="
 					+ sourcedidId
 					+ (principalSchoolUnitCode == null ? "" : ("schoolunitcode=" + principalSchoolUnitCode))

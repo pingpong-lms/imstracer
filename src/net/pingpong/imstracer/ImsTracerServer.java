@@ -29,10 +29,12 @@ import fi.iki.elonen.NanoHTTPD.Response.Status;
  */
 public class ImsTracerServer extends NanoHTTPD {
 
+	public static final int PORT = 8888;
+
 	private final List<File> directories;
 
 	public ImsTracerServer(List<File> directories) {
-		super(8888);
+		super(PORT);
 		this.directories = directories;
 	}
 

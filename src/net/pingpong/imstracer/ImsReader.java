@@ -44,11 +44,14 @@ public class ImsReader {
 						try {
 							ims.datetime = ImsState.DATETIME_DATEFORMAT.parse(datetimeString);
 						} catch (ParseException pe) {
-							// throw new ImsException("Unable to parse datetime '" + datetimeString + "'");
+							// throw new
+							// ImsException("Unable to parse datetime '" +
+							// datetimeString + "'");
 						}
 						break;
 					case "/enterprise/group":
 						ims.group = new ImsGroup();
+						ims.group.lineNumber = r.getLocation().getLineNumber();
 						ims.group.recstatus = RecStatus.parse(r.getAttributeValue(null, "recstatus"));
 						break;
 					case "/enterprise/group/description/short":
@@ -85,6 +88,7 @@ public class ImsReader {
 						break;
 					case "/enterprise/person":
 						ims.person = new ImsPerson();
+						ims.person.lineNumber = r.getLocation().getLineNumber();
 						ims.person.recstatus = RecStatus.parse(r.getAttributeValue(null, "recstatus"));
 						break;
 					case "/enterprise/person/sourcedid/id":
@@ -101,12 +105,15 @@ public class ImsReader {
 						break;
 					case "/enterprise/membership":
 						ims.membership = new ImsMembership();
+						ims.membership.lineNumber = r.getLocation().getLineNumber();
 						break;
 					case "/enterprise/membership/sourcedid/id":
 						ims.membership.sourcedidId = xml.readElement(r);
 						break;
 					case "/enterprise/membership/member":
-						ims.membership.members.add(new ImsMember(ims.membership));
+						ImsMember member = new ImsMember(ims.membership);
+						member.lineNumber = r.getLocation().getLineNumber();
+						ims.membership.members.add(member);
 						break;
 					case "/enterprise/membership/member/sourcedid/id": {
 						ImsMember lastMember = ims.membership.members.get(ims.membership.members.size() - 1);
