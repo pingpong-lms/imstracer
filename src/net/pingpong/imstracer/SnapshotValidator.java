@@ -25,7 +25,6 @@ public class SnapshotValidator {
 		SortedMap<Integer, String> errors = new TreeMap<>();
 		try {
 			ImsReader.parseFile(file, new ImsCallback() {
-
 				@Override
 				public void onPerson(ImsPerson person) {
 					persons.put(person.sourcedidId, person);
@@ -40,7 +39,6 @@ public class SnapshotValidator {
 				public void onGroup(ImsGroup group) {
 					groups.put(group.sourcedidId, group);
 				}
-
 			});
 
 			System.out.println("Snapshot: groups=" + groups.size() + ", persons=" + persons.size() + ", memberships=" + memberships.size());
