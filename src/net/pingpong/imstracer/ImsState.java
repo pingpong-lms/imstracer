@@ -15,12 +15,17 @@ public class ImsState {
 	}
 
 	public static enum RecStatus {
-		INSERT, UPDATE, DELETE, UNKNOWN;
+		ADD_OR_UPDATE, ADD, UPDATE, DELETE, UNKNOWN;
 		public static RecStatus parse(String attribute) {
-			if (attribute == null) attribute = "1";
+			if (attribute == null) {
+				// http://www.imsglobal.org/enterprise/entv1p1/imsent_infov1p1.html
+				// 4.3.5 Common Data Objects: "If this field is not present the
+				// target should interpret the behavior as 'Add' or 'Update'".
+				return ADD_OR_UPDATE;
+			}
 			switch (attribute) {
 			case "1":
-				return INSERT;
+				return ADD;
 			case "2":
 				return UPDATE;
 			case "3":
