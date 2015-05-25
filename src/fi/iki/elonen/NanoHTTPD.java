@@ -132,24 +132,7 @@ public abstract class NanoHTTPD {
 			try {
 				closeable.close();
 			} catch (IOException e) {
-			}
-		}
-	}
-
-	private static final void safeClose(Socket closeable) {
-		if (closeable != null) {
-			try {
-				closeable.close();
-			} catch (IOException e) {
-			}
-		}
-	}
-
-	private static final void safeClose(ServerSocket closeable) {
-		if (closeable != null) {
-			try {
-				closeable.close();
-			} catch (IOException e) {
+				// Ignore.
 			}
 		}
 	}
@@ -200,6 +183,7 @@ public abstract class NanoHTTPD {
 							}
 						});
 					} catch (IOException e) {
+						e.printStackTrace();
 					}
 				} while (!myServerSocket.isClosed());
 			}
@@ -299,7 +283,7 @@ public abstract class NanoHTTPD {
 	 * @return HTTP response, see class Response for details
 	 */
 	public Response serve(IHTTPSession session) {
-		Map<String, String> files = new HashMap<String, String>();
+		Map<String, String> files = new HashMap<>();
 		Method method = session.getMethod();
 		if (Method.PUT.equals(method) || Method.POST.equals(method)) {
 			try {
@@ -359,7 +343,7 @@ public abstract class NanoHTTPD {
 	 *         <code>List&lt;String&gt;</code> (a list of the values supplied).
 	 */
 	protected Map<String, List<String>> decodeParameters(String queryString) {
-		Map<String, List<String>> parms = new HashMap<String, List<String>>();
+		Map<String, List<String>> parms = new HashMap<>();
 		if (queryString != null) {
 			StringTokenizer st = new StringTokenizer(queryString, "&");
 			while (st.hasMoreTokens()) {
