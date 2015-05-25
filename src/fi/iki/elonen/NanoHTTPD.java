@@ -10,6 +10,7 @@ import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -98,7 +99,7 @@ public abstract class NanoHTTPD {
 	private final String hostname;
 	private final int myPort;
 	private ServerSocket myServerSocket;
-	private Set<Socket> openConnections = new HashSet<Socket>();
+	private Set<Socket> openConnections = new HashSet<>();
 	private Thread myThread;
 	/**
 	 * Pluggable strategy for asynchronously executing requests.
@@ -515,7 +516,7 @@ public abstract class NanoHTTPD {
 
 		public DefaultTempFileManager() {
 			tmpdir = System.getProperty("java.io.tmpdir");
-			tempFiles = new ArrayList<TempFile>();
+			tempFiles = new ArrayList<>();
 		}
 
 		@Override
@@ -590,7 +591,7 @@ public abstract class NanoHTTPD {
 		/**
 		 * Headers for the HTTP response. Use addHeader() to add lines.
 		 */
-		private Map<String, String> header = new HashMap<String, String>();
+		private Map<String, String> headers = new HashMap<>();
 		/**
 		 * The request method that spawned this response.
 		 */
@@ -608,42 +609,30 @@ public abstract class NanoHTTPD {
 			this(Status.OK, MIME_HTML, msg);
 		}
 
-		/**
-		 * Basic constructor.
-		 */
+		/** Basic constructor. */
 		public Response(IStatus status, String mimeType, InputStream data) {
 			this.status = status;
 			this.mimeType = mimeType;
 			this.data = data;
 		}
 
-		/**
-		 * Convenience method that makes an InputStream out of given text.
-		 */
+		/** Convenience method that makes an InputStream out of given text. */
 		public Response(IStatus status, String mimeType, String txt) {
 			this.status = status;
 			this.mimeType = mimeType;
-			try {
-				this.data = txt != null ? new ByteArrayInputStream(txt.getBytes("UTF-8")) : null;
-			} catch (java.io.UnsupportedEncodingException uee) {
-				uee.printStackTrace();
-			}
+			this.data = txt != null ? new ByteArrayInputStream(txt.getBytes(StandardCharsets.UTF_8)) : null;
 		}
 
-		/**
-		 * Adds given line to the header.
-		 */
+		/** Adds given line to the header. */
 		public void addHeader(String name, String value) {
-			header.put(name, value);
+			headers.put(name, value);
 		}
 
 		public String getHeader(String name) {
-			return header.get(name);
+			return headers.get(name);
 		}
 
-		/**
-		 * Sends given response to the socket.
-		 */
+		/** Sends given response to the socket. */
 		protected void send(OutputStream outputStream) {
 			String mime = mimeType;
 			SimpleDateFormat gmtFrmt = new SimpleDateFormat("E, d MMM yyyy HH:mm:ss 'GMT'", Locale.US);
@@ -660,24 +649,24 @@ public abstract class NanoHTTPD {
 					pw.print("Content-Type: " + mime + "\r\n");
 				}
 
-				if (header == null || header.get("Date") == null) {
+				if (headers == null || headers.get("Date") == null) {
 					pw.print("Date: " + gmtFrmt.format(new Date()) + "\r\n");
 				}
 
-				if (header != null) {
-					for (String key : header.keySet()) {
-						String value = header.get(key);
+				if (headers != null) {
+					for (String key : headers.keySet()) {
+						String value = headers.get(key);
 						pw.print(key + ": " + value + "\r\n");
 					}
 				}
 
-				sendConnectionHeaderIfNotAlreadyPresent(pw, header);
+				sendConnectionHeaderIfNotAlreadyPresent(pw, headers);
 
 				if (requestMethod != Method.HEAD && chunkedTransfer) {
 					sendAsChunked(outputStream, pw);
 				} else {
 					int pending = data != null ? data.available() : 0;
-					sendContentLengthHeaderIfNotAlreadyPresent(pw, header, pending);
+					sendContentLengthHeaderIfNotAlreadyPresent(pw, headers, pending);
 					pw.print("\r\n");
 					pw.flush();
 					sendAsFixedLength(outputStream, pending);
@@ -701,7 +690,7 @@ public abstract class NanoHTTPD {
 			}
 		}
 
-		private boolean headerAlreadySent(Map<String, String> header, String name) {
+		private static boolean headerAlreadySent(Map<String, String> header, String name) {
 			boolean alreadySent = false;
 			for (String headerName : header.keySet()) {
 				alreadySent |= headerName.equalsIgnoreCase(name);
@@ -851,9 +840,7 @@ public abstract class NanoHTTPD {
 
 		Map<String, String> getHeaders();
 
-		/**
-		 * @return the path part of the URL.
-		 */
+		/** @return the path part of the URL. */
 		String getUri();
 
 		String getQueryParameterString();
@@ -897,7 +884,7 @@ public abstract class NanoHTTPD {
 			this.inputStream = new PushbackInputStream(inputStream, BUFSIZE);
 			this.outputStream = outputStream;
 			String remoteIp = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "127.0.0.1" : inetAddress.getHostAddress().toString();
-			headers = new HashMap<String, String>();
+			headers = new HashMap<>();
 
 			headers.put("remote-addr", remoteIp);
 			headers.put("http-client-ip", remoteIp);
@@ -941,16 +928,16 @@ public abstract class NanoHTTPD {
 					inputStream.unread(buf, splitbyte, rlen - splitbyte);
 				}
 
-				parms = new HashMap<String, String>();
+				parms = new HashMap<>();
 				if (null == headers) {
-					headers = new HashMap<String, String>();
+					headers = new HashMap<>();
 				}
 
 				// Create a BufferedReader for parsing the header.
 				BufferedReader hin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf, 0, rlen)));
 
 				// Decode the header into parms and header java properties
-				Map<String, String> pre = new HashMap<String, String>();
+				Map<String, String> pre = new HashMap<>();
 				decodeHeader(hin, pre, parms, headers);
 
 				method = Method.lookup(pre.get("method"));
@@ -1083,9 +1070,7 @@ public abstract class NanoHTTPD {
 			}
 		}
 
-		/**
-		 * Decodes the sent headers and loads the data into Key/value pairs
-		 */
+		/** Decodes the sent headers and loads the data into Key/value pairs. */
 		private void decodeHeader(BufferedReader in, Map<String, String> pre, Map<String, String> parms, Map<String, String> headers) throws ResponseException {
 			try {
 				// Read the request line
@@ -1150,7 +1135,7 @@ public abstract class NanoHTTPD {
 								"BAD REQUEST: Content type is multipart/form-data but next chunk does not start with boundary. Usage: GET /example/file.html");
 					}
 					boundarycount++;
-					Map<String, String> item = new HashMap<String, String>();
+					Map<String, String> item = new HashMap<>();
 					mpline = in.readLine();
 					while (mpline != null && mpline.trim().length() > 0) {
 						int p = mpline.indexOf(':');
@@ -1166,7 +1151,7 @@ public abstract class NanoHTTPD {
 									"BAD REQUEST: Content type is multipart/form-data but no content-disposition info found. Usage: GET /example/file.html");
 						}
 						StringTokenizer st = new StringTokenizer(contentDisposition, ";");
-						Map<String, String> disposition = new HashMap<String, String>();
+						Map<String, String> disposition = new HashMap<>();
 						while (st.hasMoreTokens()) {
 							String token = st.nextToken().trim();
 							int p = token.indexOf('=');
@@ -1232,7 +1217,7 @@ public abstract class NanoHTTPD {
 		private int[] getBoundaryPositions(ByteBuffer b, byte[] boundary) {
 			int matchcount = 0;
 			int matchbyte = -1;
-			List<Integer> matchbytes = new ArrayList<Integer>();
+			List<Integer> matchbytes = new ArrayList<>();
 			for (int i = 0; i < b.limit(); i++) {
 				if (b.get(i) == boundary[matchcount]) {
 					if (matchcount == 0) matchbyte = i;
@@ -1333,6 +1318,7 @@ public abstract class NanoHTTPD {
 			return parms;
 		}
 
+		@Override
 		public String getQueryParameterString() {
 			return queryParameterString;
 		}

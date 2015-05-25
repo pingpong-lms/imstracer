@@ -91,7 +91,6 @@ public class ImsTracerServer extends NanoHTTPD {
 					if (debugFile) {
 						final Holder<Boolean> anythingFound = new Holder<>(false);
 						ImsReader.parseFile(requestedFile, new ImsCallback() {
-
 							@Override
 							public void onPerson(ImsPerson person) {
 								anythingFound.value = true;
