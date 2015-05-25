@@ -17,7 +17,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws Exception {
-		if (args.length == 1) {
+		if (args.length <= 1) {
 			printHelpAndExit();
 		} else if ("web".equals(args[0])) {
 			List<File> directoriesToWatch = new ArrayList<>(args.length);
