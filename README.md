@@ -8,7 +8,9 @@ Running `ant` will create a binary named `imstracer`.
 
 Running
 =======
-Usage: `./imstracer path-to-folders`, where you specify the folders containing IMS files.
+Usage: The tool can be used in two modes:
+  - web <folders-to-serve>          # Used to serve ims files from one or more folders
+  - snapshot <snapshot-to-validate> # Used to validate an IMS snapshot file
 
 Hacking
 =======
