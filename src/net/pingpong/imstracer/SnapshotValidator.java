@@ -2,6 +2,7 @@ package net.pingpong.imstracer;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -15,10 +16,10 @@ public class SnapshotValidator {
 
 	public static SortedMap<Integer, String> validateFile(File file) {
 
-		// sourcedidid -> group:
-		final HashMap<String, ImsGroup> groups = new HashMap<>();
-		// sourcedidid -> person:
-		final HashMap<String, ImsPerson> persons = new HashMap<>();
+		/** Group sourcedidid:s. */
+		final HashSet<String> groups = new HashSet<>();
+		/** Person sourcedidid:s. */
+		final HashSet<String> persons = new HashSet<>();
 		// sourcedid-of-parent -> membership:
 		final HashMap<String, ImsMembership> memberships = new HashMap<>();
 
@@ -27,7 +28,7 @@ public class SnapshotValidator {
 			ImsReader.parseFile(file, new ImsCallback() {
 				@Override
 				public void onPerson(ImsPerson person) {
-					persons.put(person.sourcedidId, person);
+					persons.add(person.sourcedidId);
 				}
 
 				@Override
@@ -37,25 +38,25 @@ public class SnapshotValidator {
 
 				@Override
 				public void onGroup(ImsGroup group) {
-					groups.put(group.sourcedidId, group);
+					groups.add(group.sourcedidId);
 				}
 			});
 
 			System.out.println("Snapshot: groups=" + groups.size() + ", persons=" + persons.size() + ", memberships=" + memberships.size());
 
 			for (ImsMembership membership : memberships.values()) {
-				if (!groups.containsKey(membership.sourcedidId)) {
+				if (!groups.add(membership.sourcedidId)) {
 					errors.put(membership.lineNumber, "Line: " + membership.lineNumber + " - Membership with non-existing parent sourcedid/id='"
 							+ membership.sourcedidId + "'");
 				}
 				for (ImsMember member : membership.members) {
 					if (member.isPerson()) {
-						if (!persons.containsKey(member.sourcedidId)) {
+						if (!persons.contains(member.sourcedidId)) {
 							errors.put(member.lineNumber, "Line: " + member.lineNumber + " - Membership with non-existing child person sourcedid/id='"
 									+ member.sourcedidId + "'");
 						}
 					} else {
-						if (!groups.containsKey(member.sourcedidId)) {
+						if (!groups.add(member.sourcedidId)) {
 							errors.put(member.lineNumber, "Line: " + member.lineNumber + " - Membership with non-existing child group sourcedid/id='"
 									+ member.sourcedidId + "'");
 						}
