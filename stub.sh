@@ -7,5 +7,5 @@ MYSELF=`which "$0" 2>/dev/null`
 java=java
 if test -n "$JAVA_HOME"; then java="$JAVA_HOME/bin/java"; fi
 
-exec "$java" -Xmx256m -jar $MYSELF "$@"
+exec "$java" -Xmx2048m -jar $MYSELF "$@"
 exit 1
