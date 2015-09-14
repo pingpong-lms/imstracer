@@ -132,7 +132,6 @@ public class ImsTracerServer extends NanoHTTPD {
 		return new NanoHTTPD.Response(responseStatus, responseMimeType, response.toString());
 	}
 
-	@SuppressWarnings("resource")
 	static InputStream openFile(File f) throws IOException {
 		FileInputStream in = new FileInputStream(f);
 		return f.getName().endsWith(".bz2") ? new BZip2CompressorInputStream(in) : in;
