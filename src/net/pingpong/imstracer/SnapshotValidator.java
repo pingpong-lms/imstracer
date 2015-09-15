@@ -45,7 +45,7 @@ public class SnapshotValidator {
 			System.out.println("Snapshot: groups=" + groups.size() + ", persons=" + persons.size() + ", memberships=" + memberships.size());
 
 			for (ImsMembership membership : memberships.values()) {
-				if (!groups.add(membership.sourcedidId)) {
+				if (!groups.contains(membership.sourcedidId)) {
 					errors.put(membership.lineNumber, "Line: " + membership.lineNumber + " - Membership with non-existing parent sourcedid/id='"
 							+ membership.sourcedidId + "'");
 				}
@@ -56,7 +56,7 @@ public class SnapshotValidator {
 									+ member.sourcedidId + "'");
 						}
 					} else {
-						if (!groups.add(member.sourcedidId)) {
+						if (!groups.contains(member.sourcedidId)) {
 							errors.put(member.lineNumber, "Line: " + member.lineNumber + " - Membership with non-existing child group sourcedid/id='"
 									+ member.sourcedidId + "'");
 						}
