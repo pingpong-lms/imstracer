@@ -9,6 +9,7 @@ public class ImsState {
 
 	public static final SimpleDateFormat DATETIME_DATEFORMAT = new SimpleDateFormat("MM/dd/yyyy KK:mm:ss aa");
 	public static final SimpleDateFormat TIMEFRAME_DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
 	static {
 		DATETIME_DATEFORMAT.setLenient(false);
 		TIMEFRAME_DATEFORMAT.setLenient(false);
@@ -71,6 +72,9 @@ public class ImsState {
 		String userid;
 		String email;
 		String photo;
+		String enrolledSchoolUnitCode;
+		String programCode;
+		boolean privacyMarker;
 
 		@Override
 		public String toString() {
@@ -99,20 +103,11 @@ public class ImsState {
 
 		@Override
 		public String toString() {
-			return recstatus
-					+ " Medlemskap {roll="
-					+ roletype
-					+ ", föräldragrupp="
-					+ parentMembership.sourcedidId
-					+ ", barn"
-					+ (isPerson() ? "person" : "grupp")
-					+ "="
-					+ sourcedidId
-					+ (principalSchoolUnitCode == null ? "" : ("schoolunitcode=" + principalSchoolUnitCode))
-					+ timeframeToString()
-					+ "}"
-					+ ((parentMembership.sourcedidId == null || parentMembership.sourcedidId.isEmpty()) ? " <span style='color:red'>OBS: Saknar föräldragrupp (fel i filen)</span>"
-							: "");
+			return recstatus + " Medlemskap {roll=" + roletype + ", föräldragrupp=" + parentMembership.sourcedidId + ", barn"
+					+ (isPerson() ? "person" : "grupp") + "=" + sourcedidId
+					+ (principalSchoolUnitCode == null ? "" : ("schoolunitcode=" + principalSchoolUnitCode)) + timeframeToString() + "}"
+					+ ((parentMembership.sourcedidId == null || parentMembership.sourcedidId.isEmpty())
+							? " <span style='color:red'>OBS: Saknar föräldragrupp (fel i filen)</span>" : "");
 		}
 	}
 

@@ -12,7 +12,9 @@ public class Main {
 		System.err.println("Usage: imstracer <command> <command-arguments>\n" // line
 				+ "       where command is one of:\n" // line
 				+ "       - web <folders-to-serve>\n" // line
-				+ "       - snapshot <snapshot-to-validate>");
+				+ "       - snapshot <snapshot-to-validate>\n" // line
+				+ "       - dynfields-sql <file-to-import>\n" //
+				+ "       - find-members <file-or-dir> <group> <role>");
 		System.exit(1);
 	}
 
@@ -46,6 +48,31 @@ public class Main {
 						System.out.println(error.getValue());
 				}
 			}
+		} else if ("dynfields-sql".equals(args[0])) {
+			File file = new File(args[1]);
+			if (!file.isFile()) {
+				System.err.println("File " + file.getAbsolutePath() + " does not exist");
+				System.exit(1);
+			} else {
+				DynFieldInserter.importFile(file);
+			}
+		} else if ("find-members".equals(args[0])) {
+			if (args.length < 4) {
+				System.err.println("usage: find-members <group> <role> <file-or-dirs>");
+				System.exit(1);
+			}
+			String groupId = args[1];
+			String role = args[2];
+			System.out.println("Searching for members in group " + groupId + " with role " + role);
+			for (int i = 3; i < args.length; i++) {
+				File file = new File(args[i]);
+				if (!file.exists()) {
+					System.err.println(args[i] + " does not exist!");
+					System.exit(1);
+				}
+				MemberSearcher.examineFileOrDir(file, groupId, role);
+			}
+
 		} else {
 			printHelpAndExit();
 		}

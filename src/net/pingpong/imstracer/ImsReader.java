@@ -17,12 +17,18 @@ public class ImsReader {
 
 	private static final XMLInputFactory XML_INPUT_FACTORY = XMLInputFactory.newInstance();
 
-	public interface ImsCallback {
-		public void onPerson(ImsPerson person);
+	public static abstract class ImsCallback {
+		public void onPerson(@SuppressWarnings("unused") ImsPerson person) {
+			// Do nothing by default.
+		}
 
-		public void onGroup(ImsGroup group);
+		public void onGroup(@SuppressWarnings("unused") ImsGroup group) {
+			// Do nothing by default.
+		}
 
-		public void onMembership(ImsMembership membership);
+		public void onMembership(@SuppressWarnings("unused") ImsMembership membership) {
+			// Do nothing by default.
+		}
 	}
 
 	public static void parseFile(File file, ImsCallback callback) throws Exception {
@@ -90,6 +96,16 @@ public class ImsReader {
 						ims.person = new ImsPerson();
 						ims.person.lineNumber = r.getLocation().getLineNumber();
 						ims.person.recstatus = RecStatus.parse(r.getAttributeValue(null, "recstatus"));
+
+						break;
+					case "/enterprise/person/extension/privacy":
+						ims.person.privacyMarker = "Level1".equals(xml.readElement(r));
+						break;
+					case "/enterprise/person/extension/programcode":
+						ims.person.programCode = xml.readElement(r);
+						break;
+					case "/enterprise/person/extension/schoolunitcode":
+						ims.person.enrolledSchoolUnitCode = xml.readElement(r);
 						break;
 					case "/enterprise/person/sourcedid/id":
 						ims.person.sourcedidId = xml.readElement(r);
