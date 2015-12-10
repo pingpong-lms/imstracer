@@ -3,6 +3,7 @@ package net.pingpong.imstracer;
 import java.io.File;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -85,6 +86,10 @@ public class ImsReader {
 						break;
 					case "/enterprise/group/extension/coursecode":
 						ims.group.coursecode = xml.readElement(r).trim();
+						break;
+					case "/enterprise/group/extension/schooltype":
+						if (ims.group.schoolTypes == null) ims.group.schoolTypes = new ArrayList<>();
+						ims.group.schoolTypes.add(xml.readElement(r).trim());
 						break;
 					case "/enterprise/group/extension/subjectcode":
 						if (ims.group.coursecode == null) {

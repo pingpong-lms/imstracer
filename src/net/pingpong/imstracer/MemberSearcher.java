@@ -24,7 +24,8 @@ public class MemberSearcher {
 				if (membership.sourcedidId.equals(group)) {
 					for (ImsMember member : membership.members) {
 						if (member.roletype.equals(role)) {
-							System.out.println(file.getName() + ":" + membership.lineNumber + " - Member " + member.sourcedidId);
+							System.out.println(file.getName() + ":" + membership.lineNumber + " - Member " + member.sourcedidId + member.timeframeToString()
+									+ ", recstatus=" + member.recstatus);
 						}
 					}
 				}

@@ -56,6 +56,7 @@ public class ImsState {
 		String name; // group/description/short
 		String coursecode;
 		String subjectcode;
+		List<String> schoolTypes;
 
 		@Override
 		public String toString() {

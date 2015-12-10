@@ -14,7 +14,8 @@ public class Main {
 				+ "       - web <folders-to-serve>\n" // line
 				+ "       - snapshot <snapshot-to-validate>\n" // line
 				+ "       - dynfields-sql <file-to-import>\n" //
-				+ "       - find-members <file-or-dir> <group> <role>");
+				+ "       - find-members <group> <role> <files-or-dirs>\n" // line
+				+ "       - find-group <group> <files-or-dirs>");
 		System.exit(1);
 	}
 
@@ -72,7 +73,21 @@ public class Main {
 				}
 				MemberSearcher.examineFileOrDir(file, groupId, role);
 			}
-
+		} else if ("find-group".equals(args[0])) {
+			if (args.length < 3) {
+				System.err.println("usage: find-members <group> <file-or-dirs>");
+				System.exit(1);
+			}
+			String groupId = args[1];
+			System.out.println("Searching for group " + groupId);
+			for (int i = 2; i < args.length; i++) {
+				File file = new File(args[i]);
+				if (!file.exists()) {
+					System.err.println(args[i] + " does not exist!");
+					System.exit(1);
+				}
+				GroupSearcher.examineFileOrDir(file, groupId);
+			}
 		} else {
 			printHelpAndExit();
 		}
