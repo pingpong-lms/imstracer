@@ -54,14 +54,11 @@ public class ImsState {
 	public static final class ImsGroup extends ImsObject {
 		String grouptype;
 		String name; // group/description/short
-		String coursecode;
-		String subjectcode;
 		List<String> schoolTypes;
 
 		@Override
 		public String toString() {
-			return recstatus + " Grupp {namn=" + name + ", typ=" + grouptype + (coursecode != null ? (", kurskod=" + coursecode) : "")
-					+ (subjectcode != null ? (", ämneskod=" + subjectcode) : "") + ", guid=" + sourcedidId + timeframeToString() + "}";
+			return recstatus + " Grupp {namn=" + name + ", typ=" + grouptype + ", guid=" + sourcedidId + timeframeToString() + "}";
 		}
 	}
 
@@ -87,26 +84,84 @@ public class ImsState {
 		final List<ImsMember> members = new ArrayList<>();
 	}
 
+	public static final class Responsibility {
+		String schoolUnitCode;
+
+		@Override
+		public String toString() {
+			return "Responsibility{code=" + schoolUnitCode + "}";
+		}
+	}
+
+	public static final class Activity {
+		String courseCode;
+		String subjectCode;
+
+		@Override
+		public String toString() {
+			return "Activity{courseCode=" + courseCode + ",subjectCode=" + subjectCode + "}";
+		}
+	}
+
+	public static final class Placement {
+		String schoolUnitCode;
+		String schoolYear;
+		String programCode;
+
+		@Override
+		public String toString() {
+			return "Placement{schoolUnitCode=" + schoolUnitCode + ",schoolYear=" + schoolYear + ",programCode=" + programCode + "}";
+		}
+	}
+
 	/** Assumes only one role per member. */
 	public static final class ImsMember extends ImsObject {
 		ImsMembership parentMembership;
 		String roletype;
 		String idtype;
-		String principalSchoolUnitCode;
+		List<Responsibility> responsibilities;
+		List<Activity> activities;
+		List<Placement> placements;
 
 		public ImsMember(ImsMembership parent) {
 			this.parentMembership = parent;
 		}
 
 		public boolean isPerson() {
-			return "Person".equals(idtype);
+			return "Person".equals(idtype) || "1".equals(idtype);
+		}
+
+		public void newResponsibility() {
+			if (responsibilities == null) responsibilities = new ArrayList<>();
+			responsibilities.add(new Responsibility());
+		}
+
+		public void newActivity() {
+			if (activities == null) activities = new ArrayList<>();
+			activities.add(new Activity());
+		}
+
+		public void newPlacement() {
+			if (placements == null) placements = new ArrayList<>();
+			placements.add(new Placement());
+		}
+
+		public Responsibility currentResponsibility() {
+			return responsibilities.get(responsibilities.size() - 1);
+		}
+
+		public Activity currentActivity() {
+			return activities.get(activities.size() - 1);
+		}
+
+		public Placement currentPlacement() {
+			return placements.get(placements.size() - 1);
 		}
 
 		@Override
 		public String toString() {
 			return recstatus + " Medlemskap {roll=" + roletype + ", föräldragrupp=" + parentMembership.sourcedidId + ", barn"
-					+ (isPerson() ? "person" : "grupp") + "=" + sourcedidId
-					+ (principalSchoolUnitCode == null ? "" : ("schoolunitcode=" + principalSchoolUnitCode)) + timeframeToString() + "}"
+					+ (isPerson() ? "person" : "grupp") + "=" + sourcedidId + timeframeToString() + "}"
 					+ ((parentMembership.sourcedidId == null || parentMembership.sourcedidId.isEmpty())
 							? " <span style='color:red'>OBS: Saknar föräldragrupp (fel i filen)</span>" : "");
 		}

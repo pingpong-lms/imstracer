@@ -19,20 +19,6 @@ public class DynFieldInserter {
 		ImsReader.parseFile(file, new ImsCallback() {
 			@Override
 			public void onPerson(ImsPerson person) {
-				if (person.programCode != null) {
-					final int DYN_FIELD = 35; // select id from dyn_field_person
-												// where extern_item_id = 32
-												// (SCHOOL_PROGRAM_CODE).
-					generateSQL(DYN_FIELD, person.sourcedidId, person.programCode);
-				}
-
-				if (person.enrolledSchoolUnitCode != null) {
-					final int DYN_FIELD = 28; // select id from dyn_field_person
-												// where extern_item_id = 33
-												// (ENROLLED_SCHOOL_UNIT_CODE).
-					generateSQL(DYN_FIELD, person.sourcedidId, person.enrolledSchoolUnitCode);
-				}
-
 				if (person.privacyMarker) {
 					final int DYN_FIELD = 36; // select id from dyn_field_person
 												// where extern_item_id = 34

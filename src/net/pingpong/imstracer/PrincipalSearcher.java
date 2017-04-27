@@ -24,7 +24,7 @@ public class PrincipalSearcher {
 				for (ImsMember member : membership.members) {
 					if (member.roletype.equals("Principal")) {
 						System.out.println(file.getName() + ":" + membership.lineNumber + " - Member " + member.sourcedidId + member.timeframeToString()
-								+ ", recstatus=" + member.recstatus + ", group=" + membership.sourcedidId + ", schoolunitcode=" + member.principalSchoolUnitCode);
+								+ ", recstatus=" + member.recstatus + ", group=" + membership.sourcedidId + ", responsibilities=" + member.responsibilities);
 					}
 				}
 			}

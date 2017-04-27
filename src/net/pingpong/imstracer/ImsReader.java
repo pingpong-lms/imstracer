@@ -84,18 +84,9 @@ public class ImsReader {
 						}
 					}
 						break;
-					case "/enterprise/group/extension/coursecode":
-						ims.group.coursecode = xml.readElement(r).trim();
-						break;
 					case "/enterprise/group/extension/schooltype":
 						if (ims.group.schoolTypes == null) ims.group.schoolTypes = new ArrayList<>();
 						ims.group.schoolTypes.add(xml.readElement(r).trim());
-						break;
-					case "/enterprise/group/extension/subjectcode":
-						if (ims.group.coursecode == null) {
-							// Only note subject code when necessary.
-							ims.group.subjectcode = xml.readElement(r).trim();
-						}
 						break;
 					case "/enterprise/person":
 						ims.person = new ImsPerson();
@@ -152,11 +143,48 @@ public class ImsReader {
 						lastMember.recstatus = RecStatus.parse(r.getAttributeValue(null, "recstatus"));
 					}
 						break;
-					case "/enterprise/membership/member/role/extension/schoolunitcode": {
+					case "/enterprise/membership/member/role/extension/activity": {
 						ImsMember lastMember = ims.membership.members.get(ims.membership.members.size() - 1);
-						lastMember.principalSchoolUnitCode = xml.readElement(r);
+						lastMember.newActivity();
 					}
 						break;
+					case "/enterprise/membership/member/role/extension/activity/coursecode": {
+						ImsMember lastMember = ims.membership.members.get(ims.membership.members.size() - 1);
+						lastMember.currentActivity().courseCode = xml.readElement(r).trim();
+					}
+						break;
+					case "/enterprise/membership/member/role/extension/activity/subjectcode": {
+						ImsMember lastMember = ims.membership.members.get(ims.membership.members.size() - 1);
+						lastMember.currentActivity().subjectCode = xml.readElement(r).trim();
+					}
+						break;
+					case "/enterprise/membership/member/role/extension/placement": {
+						ImsMember lastMember = ims.membership.members.get(ims.membership.members.size() - 1);
+						lastMember.newPlacement();
+					}
+						break;
+					case "/enterprise/membership/member/role/extension/placement/schoolunitcode": {
+						ImsMember lastMember = ims.membership.members.get(ims.membership.members.size() - 1);
+						lastMember.currentPlacement().schoolUnitCode = xml.readElement(r).trim();
+					}
+						break;
+					case "/enterprise/membership/member/role/extension/placement/schoolyear": {
+						ImsMember lastMember = ims.membership.members.get(ims.membership.members.size() - 1);
+						lastMember.currentPlacement().schoolYear = xml.readElement(r).trim();
+					}
+						break;
+
+					case "/enterprise/membership/member/role/extension/responsibility": {
+						ImsMember lastMember = ims.membership.members.get(ims.membership.members.size() - 1);
+						lastMember.newResponsibility();
+					}
+						break;
+					case "/enterprise/membership/member/role/extension/responsibility/schoolunitcode": {
+						ImsMember lastMember = ims.membership.members.get(ims.membership.members.size() - 1);
+						lastMember.currentResponsibility().schoolUnitCode = xml.readElement(r).trim();
+					}
+						break;
+
 					case "/enterprise/membership/member/role/timeframe/begin": {
 						String dateString = xml.readElement(r).trim();
 						if (!dateString.isEmpty()) {

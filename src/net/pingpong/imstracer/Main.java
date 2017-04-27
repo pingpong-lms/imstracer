@@ -16,7 +16,8 @@ public class Main {
 				+ "       - dynfields-sql <file-to-import>\n" //
 				+ "       - find-members <group> <role> <files-or-dirs>\n" // line
 				+ "       - find-group <group> <files-or-dirs>\n" // Line
-				+ "       - find-principals <files-or-dirs>");
+				+ "       - find-principals <files-or-dirs>\n"
+				+ "       - visualize <file>");
 		System.exit(1);
 	}
 
@@ -102,6 +103,17 @@ public class Main {
 				}
 				PrincipalSearcher.examineFileOrDir(file);
 			}
+		} else if ("visualize".equals(args[0])) {
+			if (args.length != 2) {
+				System.err.println("usage: find-principals <file>");
+				System.exit(1);
+			}
+			File file = new File(args[1]);
+			if (!file.isFile()) {
+				System.err.println(args[1] + " does not exist!");
+				System.exit(1);
+			}
+			new Visualizer().visualizeToStdout(file);
 		} else {
 			printHelpAndExit();
 		}
