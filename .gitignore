@@ -1,3 +1,5 @@
 /imstracer
 /imstracer.jar
 bin/
+*.iml
+*.idea/
