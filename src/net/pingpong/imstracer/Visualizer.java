@@ -73,7 +73,7 @@ public class Visualizer {
 			}
 		});
 
-		List<ImsGroup> topGroups = groups.values().stream().filter(g -> !groupsWithParents.contains(g)).sorted((g1, g2) -> g1.name.compareTo(g2.name))
+		List<ImsGroup> topGroups = groups.values().stream().filter(g -> !groupsWithParents.contains(g.sourcedidId)).sorted((g1, g2) -> g1.name.compareTo(g2.name))
 				.collect(Collectors.toList());
 		for (ImsGroup topGroup : topGroups) {
 			System.out.println("Group {name=" + topGroup.name + ", type=" + topGroup.grouptype + ", id=" + topGroup.sourcedidId + "}");
