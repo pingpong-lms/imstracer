@@ -4,7 +4,7 @@ A tool for debugging IMS.
 
 Building
 ========
-Running `gradle` to build an executable file named `imstracer`.
+Run `gradle` to build an executable file named `imstracer`.
 
 Running
 =======
