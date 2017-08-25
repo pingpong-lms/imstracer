@@ -1,6 +1,7 @@
 /imstracer
 /imstracer.jar
-bin/
+/bin/
+/build/
 *.iml
 .idea/
 .gradle/
