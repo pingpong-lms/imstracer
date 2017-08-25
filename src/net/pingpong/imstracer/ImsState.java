@@ -1,5 +1,6 @@
 package net.pingpong.imstracer;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -167,9 +168,14 @@ public class ImsState {
 		}
 	}
 
+	File xmlFile;
 	Date datetime;
 	ImsPerson person;
 	ImsGroup group;
 	ImsMembership membership;
+
+	public String getIsoDateTime() {
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(datetime);
+	}
 
 }

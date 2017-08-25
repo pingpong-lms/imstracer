@@ -3,6 +3,7 @@ package net.pingpong.imstracer;
 import java.io.File;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.xml.stream.XMLInputFactory;
@@ -19,6 +20,13 @@ public class ImsReader {
 	private static final XMLInputFactory XML_INPUT_FACTORY = XMLInputFactory.newInstance();
 
 	public static abstract class ImsCallback {
+
+		protected ImsState imsState;
+
+		final void setImsState(ImsState imsState) {
+			this.imsState = imsState;
+		}
+
 		public void onPerson(@SuppressWarnings("unused") ImsPerson person) {
 			// Do nothing by default.
 		}
@@ -39,6 +47,9 @@ public class ImsReader {
 			XmlState xml = new XmlState();
 			ImsState ims = new ImsState();
 
+			ims.xmlFile = file;
+			callback.setImsState(ims);
+
 			while (r.hasNext()) {
 				switch (r.next()) {
 				case XMLStreamReader.START_ELEMENT:
@@ -51,9 +62,12 @@ public class ImsReader {
 						try {
 							ims.datetime = ImsState.DATETIME_DATEFORMAT.parse(datetimeString);
 						} catch (ParseException pe) {
-							// throw new
-							// ImsException("Unable to parse datetime '" +
-							// datetimeString + "'");
+							try {
+								// Example: 20170629T0314.
+								ims.datetime = new SimpleDateFormat("yyyyMMdd'T'HHmm").parse(datetimeString);
+							} catch (ParseException p) {
+								System.err.println("Note: Cannot parse /enterprise/properties/datetime = '" + datetimeString + "'");
+							}
 						}
 						break;
 					case "/enterprise/group":

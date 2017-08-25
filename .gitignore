@@ -2,4 +2,5 @@
 /imstracer.jar
 bin/
 *.iml
-*.idea/
+.idea/
+.gradle/
