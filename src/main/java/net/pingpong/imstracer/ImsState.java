@@ -77,7 +77,7 @@ public class ImsState {
 
 		@Override
 		public String toString() {
-			return recstatus + " Person {namn=" + givenName + " " + familyName + ", guid=" + sourcedidId + timeframeToString() + ", pnr=" + personnummer + "}";
+			return recstatus + " Person {namn=" + givenName + " " + familyName + ", guid=" + sourcedidId + timeframeToString() + ", pnr=" + personnummer + ", userid=" + userid + "}";
 		}
 	}
 

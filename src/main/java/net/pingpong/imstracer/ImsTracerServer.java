@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.ws.Holder;
-
 import net.pingpong.imstracer.ImsReader.ImsCallback;
 import net.pingpong.imstracer.ImsState.ImsGroup;
 import net.pingpong.imstracer.ImsState.ImsMember;
@@ -89,29 +87,29 @@ public class ImsTracerServer extends NanoHTTPD {
 				File requestedFile = new File(file);
 				if (requestedFile.isFile()) {
 					if (debugFile) {
-						final Holder<Boolean> anythingFound = new Holder<>(false);
+						final boolean[] anythingFound = new boolean[1];
 						ImsReader.parseFile(requestedFile, new ImsCallback() {
 							@Override
 							public void onPerson(ImsPerson person) {
-								anythingFound.value = true;
+								anythingFound[0] = true;
 								response.append("<li>").append(person).append("</li>");
 							}
 
 							@Override
 							public void onGroup(ImsGroup group) {
-								anythingFound.value = true;
+								anythingFound[0] = true;
 								response.append("<li>").append(group).append("</li>");
 							}
 
 							@Override
 							public void onMembership(ImsMembership membership) {
-								anythingFound.value = true;
+								anythingFound[0] = true;
 								for (ImsMember member : membership.members) {
 									response.append("<li>").append(member).append("</li>");
 								}
 							}
 						});
-						if (!anythingFound.value) {
+						if (!anythingFound[0]) {
 							response.append("<h1>Filen är tom från IMS-händelser</h1>");
 						}
 					} else {

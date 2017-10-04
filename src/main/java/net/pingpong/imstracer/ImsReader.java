@@ -66,7 +66,7 @@ public class ImsReader {
 								// Example: 20170629T0314.
 								ims.datetime = new SimpleDateFormat("yyyyMMdd'T'HHmm").parse(datetimeString);
 							} catch (ParseException p) {
-								System.err.println("Note: Cannot parse /enterprise/properties/datetime = '" + datetimeString + "'");
+								// System.err.println("Note: Cannot parse /enterprise/properties/datetime = '" + datetimeString + "'");
 							}
 						}
 						break;
@@ -122,6 +122,7 @@ public class ImsReader {
 						break;
 					case "/enterprise/person/userid":
 						if ("PID".equals(r.getAttributeValue(null, "useridtype"))) ims.person.personnummer = xml.readElement(r);
+						else ims.person.userid = xml.readElement(r);
 						break;
 					case "/enterprise/person/name/n/family":
 						ims.person.familyName = xml.readElement(r);

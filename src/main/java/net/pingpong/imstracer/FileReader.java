@@ -5,7 +5,7 @@ import java.io.File;
 public class FileReader {
 
     static void examineFiles(String[] args, int startIndex, ImsReader.ImsCallback callback) throws Exception {
-        for (int i = startIndex; startIndex < args.length; i++) {
+        for (int i = startIndex; i < args.length; i++) {
             File fileOrDir = new File(args[i]);
             if (!(fileOrDir.isFile() || fileOrDir.isDirectory())) {
                 System.err.println("Invalid file or directory: " + fileOrDir);

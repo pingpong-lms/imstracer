@@ -13,6 +13,7 @@ public class Main {
 				+ "       - dynfields-sql <file-to-import>\n" //
 				+ "       - find-members <group> <role> <files-or-dirs>\n" // line
 				+ "       - log-group-membership <group> <member> <files-or-dirs>\n" // line
+				+ "       - person-changes <sourcedid-ids-comma-separated> <files-or-dirs>\n" // line
 				+ "       - find-group <group> <files-or-dirs>\n" // Line
 				+ "       - find-principals <files-or-dirs>\n"
 				+ "       - visualize <file>");
@@ -133,6 +134,23 @@ public class Main {
 					}
 				}
 			});
+		} else if ("person-changes".equals(args[0])) {
+			if (args.length < 3) {
+				System.err.println("usage: person-changes <sourcedidid-comma-separated> <file-or-dirs>");
+				System.exit(1);
+			}
+			String[] values = args[1].split(",");
+			Set<String> set = new HashSet<>();
+			for (String s : values) set.add(s.trim());
+			FileReader.examineFiles(args, 2, new ImsReader.ImsCallback() {
+				@Override
+				public void onPerson(ImsState.ImsPerson person) {
+					if (set.contains(person.sourcedidId)) {
+						System.out.println(imsState.xmlFile.getName() + ":" + person);
+					}
+				}
+			});
+
 		} else if ("visualize".equals(args[0])) {
 			if (args.length != 2) {
 				System.err.println("usage: find-principals <file>");

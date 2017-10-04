@@ -5,6 +5,8 @@ repositories {
 }
 
 apply plugin: 'java'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
 	compile group: 'org.apache.commons', name: 'commons-compress', version: '1.14'
